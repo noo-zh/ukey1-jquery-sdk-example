@@ -1,6 +1,6 @@
 # Working example for Ukey1 SDK plugin for jQuery
 
-This repository contains the working example for **[Ukey1 React SDK](https://github.com/asaritech/ukey1-jquery-sdk)**. It's a playground for your tests. Enjoy.
+This repository contains the working example for **[Ukey1 jQuery SDK](https://github.com/asaritech/ukey1-jquery-sdk)**. It's a playground for your tests. Enjoy.
 
 Note this example works only in browsers that support window.sessionStorage!
 
