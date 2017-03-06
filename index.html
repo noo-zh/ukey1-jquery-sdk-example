@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://gitcdn.xyz/repo/asaritech/ukey1-signin-button/master/css/ukey1-button.min.css" media="screen">
+    <title>HTML+jQuery App</title>
+    <style>
+      #root {
+        padding: 50px;
+        text-align: center;
+      }
+      #example {
+        display: none;
+      }
+      .welcome {
+        display: block;
+        font-size: 18px;
+      }
+      .logout {
+        display: block;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <a href="#" class="ukey1-button">Sign in via Ukey1</a>
+      <div id="example">
+        <span class="welcome">Welcome <span id="user_name">-- loading --</span>.</span>
+        <a href="#" class="logout">Logout</a>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="assets/js.cookie.js"></script>
+    <script src="https://gitcdn.xyz/repo/asaritech/ukey1-jquery-sdk/master/dist/jquery.ukey1.min.js"></script>
+    <script>
+      $(function() {
+        var URL = window.location.href;
+        var UKEY1_API_HOST = ''; // default host is used
+        var UKEY1_APP_ID = 'your-app-id';
+
+        $('.ukey1-button').click(function(e) {
+          e.preventDefault();
+
+          var options = {
+            host: UKEY1_API_HOST,
+            appId: UKEY1_APP_ID,
+            returnUrl: URL + (URL.search(/#/) >= 0 ? '' : '#') + '~auth~',
+            scope: ['access_token', 'email', 'image'],
+            signup: true
+          };
+
+          try {
+            new $.ukey1().connect(options);
+          } catch (error) {
+            console.log('Something was wrong', error);
+          }
+        });
+
+        $('.logout').click(function(e) {
+          e.preventDefault();
+          sessionStorage.removeItem(exampleStorageKey);
+          $('#example').hide();
+          $('.ukey1-button').show();
+          window.history.replaceState(null, null, window.location.pathname);
+        });
+
+        // Note this example works only in browsers that support window.sessionStorage!
+
+        var exampleStorageKey = 'ukey1_jquery_example';
+        var exampleUserName = sessionStorage.getItem(exampleStorageKey);
+        var gatewayResponse = (window.location.hash.search(/~auth~/) >= 0);
+
+        if (!exampleUserName) {
+          if (gatewayResponse) {
+            authorizationEvent();
+          }
+        } else {
+          $('.ukey1-button').hide();
+          $('#example').show();
+          $('#user_name').html(exampleUserName);
+        }
+
+        function authorizationEvent() {
+          $('.ukey1-button').hide();
+          $('#example').show();
+
+          var options = {
+            host: UKEY1_API_HOST,
+            appId: UKEY1_APP_ID,
+            success: function (data) {
+              console.log(data);
+              sessionStorage.setItem(exampleStorageKey, data.name.display);
+              $('#user_name').html(data.name.display);
+            },
+            finished: function (success) {
+              if (!success) {
+                $('.logout').trigger('click');
+              }
+
+              window.history.replaceState(null, null, window.location.pathname);
+            }
+          };
+
+          try {
+            new $.ukey1().accessToken(options);
+          } catch (error) {
+            console.log('Something was wrong', error);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
