@@ -7,7 +7,7 @@ Note this example works only in browsers that support window.sessionStorage!
 ## Installation & Usage
 
 - Download or clone this repository to your localhost or web server.
-- Get your Ukey1 `App ID` (for test environment) - from [Ukey1 Developer Console](https://ukey1.nooledge.com/dashboard/developer)
+- Get your Ukey1 `App ID` (for test environment) - from [Ukey1 Developer Console](https://dashboard.ukey.one/developer)
 - Set your `App ID` in [index.html](index.html) (search for var UKEY1_APP_ID)
 - Open `index.html` in your browser
 

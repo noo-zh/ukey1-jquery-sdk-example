@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://gitcdn.xyz/repo/asaritech/ukey1-signin-button/master/css/ukey1-button.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://gateway.ukey1cdn.com/components/ukey1-signin-button/v1/ukey1-button.min.css" media="screen">
     <title>HTML+jQuery App</title>
     <style>
       #root {
@@ -34,21 +34,19 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="assets/js.cookie.js"></script>
-    <script src="https://gitcdn.xyz/repo/asaritech/ukey1-jquery-sdk/master/dist/jquery.ukey1.min.js"></script>
+    <script src="https://code.ukey1cdn.com/ukey1-jquery-sdk/v2.0.0/dist/jquery.ukey1.min.js"></script>
     <script>
       $(function() {
-        var URL = window.location.href;
-        var UKEY1_API_HOST = ''; // default host is used
-        var UKEY1_APP_ID = 'your-app-id';
+        var URL = window.location.origin + window.location.pathname;
+        var UKEY1_APP_ID = '';
 
         $('.ukey1-button').click(function(e) {
           e.preventDefault();
 
           var options = {
-            host: UKEY1_API_HOST,
             appId: UKEY1_APP_ID,
             returnUrl: URL + (URL.search(/#/) >= 0 ? '' : '#') + '~auth~',
-            scope: ['access_token', 'email', 'image'],
+            scope: ['firstname', 'email', 'image'],
             signup: true
           };
 
@@ -88,12 +86,16 @@
           $('#example').show();
 
           var options = {
-            host: UKEY1_API_HOST,
             appId: UKEY1_APP_ID,
             success: function (data) {
               console.log(data);
-              sessionStorage.setItem(exampleStorageKey, data.name.display);
-              $('#user_name').html(data.name.display);
+              
+              if (!data.firstname) {
+                data.firstname = '-- anonymous --';
+              }
+              
+              sessionStorage.setItem(exampleStorageKey, data.firstname);
+              $('#user_name').html(data.firstname);
             },
             finished: function (success) {
               if (!success) {
@@ -107,7 +109,7 @@
           try {
             new $.ukey1().accessToken(options);
           } catch (error) {
-            console.log('Something was wrong', error);
+            console.log('Something went wrong', error);
           }
         }
       });
